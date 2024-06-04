@@ -27,7 +27,9 @@ SECRET_KEY = "django-insecure-d*c-3*hc%0e3l072*&9%otzm+pz^tkj7skm%loc727-r@9$4gf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['192.168.11.109']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
 
 
 # Application definition
@@ -40,7 +42,15 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "employe",
+    "calcul",
     "crispy_forms",
+    "elementSal",
+    "parametre",
+    "statistiques",
+    "scann",
+    "importer",
+    #"user",
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [

@@ -24,6 +24,13 @@ urlpatterns = [
     # path('personel',views.list, name='personel'),
     # path('formulaire',views.form, name='form'),
     path('', include('employe.urls')),
+    path("elements/", include('elementSal.urls')),
+    path("parametre/", include('parametre.urls')),
+    path("calcul/", include('calcul.urls')),
+    path("statistiques/", include('statistiques.urls')),
+    path("scann/", include('scann.urls')),
+    path("import/", include('importer.urls')),
+    path("user/", include('user.urls')),
     path("admin/", admin.site.urls),
 ]
 

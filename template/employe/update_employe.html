@@ -6,7 +6,7 @@
 	 	<div class="row">
 	 		<div class="col-sm-8 offset-2">
 	 			<h3 class="alert alerte-info">Modifier les information d'un employé</h3>
-	 			<form class="card-body form-group" action="" method="post">
+	 			<form class="card-body form-group" action="" method="post" enctype="multipart/form-data">
 	 				{%  csrf_token %}
 	 				{{form.as_p}}
 	 				<div class="form-group">
