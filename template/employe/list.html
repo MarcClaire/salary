@@ -16,8 +16,16 @@
          <h4 class="">Liste des employés </h4>
       </div>
       <div class="">
-         <a class="btn btn-outline-info float-right" href="{% url 'add_employe' %}">NOUVEAU <i
-               class="fas fa-plus"></i></a>
+         <a class="btn btn-outline-info float-right" href="{% url 'add_employe' %}">NOUVEAU <i class="fas fa-plus"></i>
+         </a>
+         <a class="btn btn-outline-info" href="{% url 'importPersonnel' %}">
+            <i class="fas fa-download"></i>
+            <span class="">Importer Employés Excel</span>
+         </a>
+         <a class="btn btn-outline-info" href="{% url 'scann_cnib' %}">
+            <i class="fas fa-print"></i>
+            <span class="">Scanner</span>
+         </a>
       </div>
    </div>
    <div class="card-body">
