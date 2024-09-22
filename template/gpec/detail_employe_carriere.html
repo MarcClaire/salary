@@ -1,0 +1,52 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Détails de Carrière - {{ employe.nom }} {{ employe.prenom }}</h1>
+
+<h2>Évolutions de Carrière</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Ancien Poste</th>
+            <th>Nouveau Poste</th>
+            <th>Commentaire</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for evolution in evolutions %}
+        <tr>
+            <td>{{ evolution.date_changement }}</td>
+            <td>{{ evolution.get_type_evolution_display }}</td>
+            <td>{{ evolution.ancien_poste.titre }}</td>
+            <td>{{ evolution.nouveau_poste.titre }}</td>
+            <td>{{ evolution.commentaire }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Mouvements de Personnel</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Raison</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for mouvement in mouvements %}
+        <tr>
+            <td>{{ mouvement.date_mouvement }}</td>
+            <td>{{ mouvement.get_type_mouvement_display }}</td>
+            <td>{{ mouvement.raison }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'suivi_carriere' %}" class="btn btn-secondary">Retour au suivi de carrière</a>
+{% endblock %}

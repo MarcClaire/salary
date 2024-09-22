@@ -1,7 +1,7 @@
 from urllib import request
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from employe.models import Contrat, Employe, Paiement, Pointage, Mois, Annee, Type_paiement
+from employe.models import Contrat, Employe, Paiement, Pointage, Mois, Annee, Type_paiement, Structure
 #from salary.employe.views import detail_contrat
 from .models import Parametre_calcul, Parametre_ifc, Constante_calcule
 from .Traitement import taux_horaire, paiement_volume_horaire, calcul_prime_anciennete, calcul_prime_quart, calcul_prime_panier, calcul_prime_quart_sftp, calcul_cnss, calcul_cnss_patronale, calcul_tpa, calcul_IUTS, calcul_ifc, calcul_icp
@@ -244,3 +244,33 @@ def delete_paiement(request, id_paiement):
     pointage=Pointage.objects.filter(paiement=paiement).delete()
     paiement.delete()
     return redirect('liste_paiement', id_contrat=paiement.contrat_id)
+
+# Livre de paie 
+@login_required(login_url="user_signin")
+def livre_de_paie(request):
+    annee = request.GET.get('annee')
+    mois = request.GET.get('mois')
+    structure = request.GET.get('structure')
+    
+    paiements = Paiement.objects.all()
+    if annee:
+        paiements = paiements.filter(annee__exercice=annee)
+    if mois:
+        paiements = paiements.filter(mois__libelle=mois)
+    if structure:
+        paiements = paiements.filter(contrat__structure__id=structure)
+    
+    # Calcul de la masse salariale
+    masse_salariale = paiements.aggregate(Sum('salaire_brut'))['salaire_brut__sum']
+    
+    context = {
+        'paiements': paiements,
+        'masse_salariale': masse_salariale,
+        'annees': Annee.objects.all(),
+        'mois': Mois.objects.all(),
+        'structures': Structure.objects.all(),
+        'selected_annee': annee,
+        'selected_mois': mois,
+        'selected_structure': structure,
+    }
+    return render(request, 'calcul/livre_de_paie.html', context)

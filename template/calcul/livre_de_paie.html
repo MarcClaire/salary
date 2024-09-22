@@ -1,0 +1,79 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+{% block title %}Livre de Paie{% endblock %}
+
+{% block page_title %}Livre de Paie{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- <h1 class="mb-4">Livre de Paie</h1> -->
+
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <select name="annee" class="form-control">
+                    <option value="">Toutes les années</option>
+                    {% for a in annees %}
+                    <option value="{{ a.exercice }}" {% if a.exercice == selected_annee %}selected{% endif %}>{{
+                        a.exercice }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="mois" class="form-control">
+                    <option value="">Tous les mois</option>
+                    {% for m in mois %}
+                    <option value="{{ m.libelle }}" {% if m.libelle == selected_mois %}selected{% endif %}>{{ m.libelle }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="structure" class="form-control">
+                    <option value="">Toutes les structures</option>
+                    {% for s in structures %}
+                    <option value="{{ s.id }}" {% if s.id|stringformat:"s" == selected_structure %}selected{% endif %}>{{
+                        s.denomination }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Filtrer</button>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Structure</th>
+                <th>Salaire de base</th>
+                <th>Salaire brut</th>
+                <th>CNSS</th>
+                <th>IUTS</th>
+                <th>Salaire net</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paiement in paiements %}
+            <tr>
+                <td>{{ paiement.contrat.employe.nom }}</td>
+                <td>{{ paiement.contrat.employe.prenoms }}</td>
+                <td>{{ paiement.contrat.structure.denomination }}</td>
+                <td>{{ paiement.salaire_base|floatformat:2 }}</td>
+                <td>{{ paiement.salaire_brut|floatformat:2 }}</td>
+                <td>{{ paiement.cotitsation_cnss|floatformat:2 }}</td>
+                <td>{{ paiement.iuts|floatformat:2 }}</td>
+                <td>{{ paiement.salaire_net|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        <h3>Masse salariale totale : {{ masse_salariale|floatformat:2 }} FCFA</h3>
+    </div>
+</div>
+{% endblock %}

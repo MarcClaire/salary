@@ -1,0 +1,29 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Dossiers du Personnel</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Nombre de documents</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employe in employes %}
+        <tr>
+            <td>{{ employe.nom }} {{ employe.prenoms }}</td>
+            <td>{{ employe.documents.count }}</td>
+            <td>
+                <a href="{% url 'detail_dossier' employe.id %}" class="btn btn-info btn-sm">Voir le dossier</a>
+                <a href="{% url 'ajouter_document' employe.id %}" class="btn btn-success btn-sm">Ajouter un document</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

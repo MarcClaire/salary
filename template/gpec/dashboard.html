@@ -1,0 +1,95 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Gestion Prévisionnelle des Emplois et des Compétences</h1>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Évaluation</h5>
+                <p class="card-text">Outil d'évaluation des employés</p>
+                <a href="{% url 'evaluation' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Gestion des talents</h5>
+                <p class="card-text">Gestion des talents et des performances</p>
+                <a href="{% url 'gestion_talents' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Gestion des documents</h5>
+                <p class="card-text">Gestion des documents des employés</p>
+                <a href="{% url 'dossier_personnel' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Effectifs par genre et par secteur</h5>
+                <p class="card-text">Filtrer et visualiser l'effectif par genre selon les secteurs d'activité.</p>
+                <a href="{% url 'effectifs_par_genre_et_secteur' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Plan de recrutement</h5>
+                <p class="card-text">Gérer et de suivre les plans de recrutement de l'entreprise.</p>
+                <a href="{% url 'liste_plans_recrutement' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Suivi de carrière interne</h5>
+                <p class="card-text">Suivre l'évolution de carrière des employés</p>
+                <a href="{% url 'suivi_carriere' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Gestion de temps</h5>
+                <p class="card-text">Suivre les présences et les absences de travail des employés.</p>
+                <a href="{% url 'gestion_temps_travail' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Fiche de poste</h5>
+                <p class="card-text">Gérer les fiches de postes pour chaque emploi dans l'organisation.</p>
+                <a href="{% url 'liste_fiches_poste' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Référentiel des compétences</h5>
+                <p class="card-text">Gérer et Évaluer les compétences des employés de l'entreprise .</p>
+                <a href="{% url 'liste_competences' %}" class="btn btn-primary">Accéder</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Répétez pour les autres options -->
+</div>
+{% endblock %}

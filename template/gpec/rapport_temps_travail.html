@@ -1,0 +1,77 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Rapport de Temps de Travail</h1>
+
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="debut">Date de début :</label>
+            <input type="date" id="debut" name="debut" value="{{ debut|default:'' }}" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <label for="fin">Date de fin :</label>
+            <input type="date" id="fin" name="fin" value="{{ fin|default:'' }}" class="form-control">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Générer le rapport</button>
+        </div>
+    </div>
+</form>
+
+{% if debut and fin %}
+<h2>Pointages</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Date</th>
+            <th>Heure d'arrivée</th>
+            <th>Heure de départ</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pointage in pointages %}
+        <tr>
+            <td>{{ pointage.employe.nom }} {{ pointage.employe.prenom }}</td>
+            <td>{{ pointage.date }}</td>
+            <td>{{ pointage.heure_arrivee|default_if_none:"-" }}</td>
+            <td>{{ pointage.heure_depart|default_if_none:"-" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Aucun pointage trouvé pour cette période.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Absences</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Type d'absence</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for absence in absences %}
+        <tr>
+            <td>{{ absence.employe.nom }} {{ absence.employe.prenom }}</td>
+            <td>{{ absence.get_type_absence_display }}</td>
+            <td>{{ absence.date_debut }}</td>
+            <td>{{ absence.date_fin }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Aucune absence trouvée pour cette période.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

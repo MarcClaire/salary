@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+:root {
+  --primary-color: #4e73df;
+  --secondary-color: #858796;
+  --success-color: #1cc88a;
+  --info-color: #36b9cc;
+  --warning-color: #f6c23e;
+  --danger-color: #e74a3b;
+  --light-color: #f8f9fc;
+  --dark-color: #5a5c69;
+  --accent-color: #9bc31c;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: var(--light-color);
+}
+
+.sidebar {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+}
+
+.sidebar .nav-link {
+  color: rgba(255,255,255,.8);
+}
+
+.sidebar .nav-link:hover {
+  color: var(--accent-color);
+}
+
+.sidebar .nav-link.active {
+  font-weight: bold;
+  color: #fff;
+}
+
+.card {
+  border: none;
+  border-radius: .35rem;
+  box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
+}
+
+.card-header {
+  background-color: #f8f9fc;
+  border-bottom: 1px solid #e3e6f0;
+}
+
+.border-left-primary {
+  border-left: .25rem solid var(--primary-color) !important;
+}
+
+.border-left-accent {
+  border-left: .25rem solid var(--accent-color) !important;
+}
+
+.text-accent {
+  color: var(--accent-color) !important;
+}
+
+.btn-accent {
+  color: #fff;
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.btn-accent:hover {
+  color: #fff;
+  background-color: #89af19;
+  border-color: #89af19;
+}

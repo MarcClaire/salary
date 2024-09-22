@@ -1,0 +1,33 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>{{ fiche.titre }}</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Détails du poste</h5>
+        <p><strong>Département :</strong> {{ fiche.departement }}</p>
+        <p><strong>Supérieur hiérarchique :</strong> {{ fiche.superieur_hierarchique }}</p>
+        <p><strong>Missions principales :</strong> {{ fiche.missions_principales|linebreaks }}</p>
+        <p><strong>Activités principales :</strong> {{ fiche.activites_principales|linebreaks }}</p>
+        <p><strong>Compétences requises :</strong> {{ fiche.competences_requises|linebreaks }}</p>
+        <p><strong>Formation requise :</strong> {{ fiche.formation_requise|linebreaks }}</p>
+        <p><strong>Expérience requise :</strong> {{ fiche.experience_requise|linebreaks }}</p>
+        <p><strong>Date de création :</strong> {{ fiche.date_creation }}</p>
+        <p><strong>Dernière mise à jour :</strong> {{ fiche.date_mise_a_jour }}</p>
+    </div>
+</div>
+
+<h2>Employés occupant ce poste</h2>
+<ul>
+    {% for employe_poste in employes %}
+    <li>{{ employe_poste.employe.nom }} {{ employe_poste.employe.prenom }} (depuis le {{ employe_poste.date_attribution }})</li>
+    {% empty %}
+    <li>Aucun employé n'occupe actuellement ce poste.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'modifier_fiche_poste' fiche.id %}" class="btn btn-warning">Modifier la fiche de poste</a>
+<a href="{% url 'liste_fiches_poste' %}" class="btn btn-secondary">Retour à la liste</a>
+{% endblock %}

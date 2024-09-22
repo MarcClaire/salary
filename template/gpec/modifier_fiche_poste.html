@@ -1,0 +1,12 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Modifier la Fiche de Poste : {{ fiche.titre }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+</form>
+{% endblock %}

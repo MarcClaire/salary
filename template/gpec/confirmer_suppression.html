@@ -1,0 +1,16 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Confirmer la suppression</h1>
+
+<p>Êtes-vous sûr de vouloir supprimer le document "{{ document.titre }}" de {{ document.employe.nom }} {{
+    document.employe.prenoms }} ?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+    <a href="{% url 'detail_dossier' document.employe.id %}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

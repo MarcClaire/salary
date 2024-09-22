@@ -1,0 +1,64 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Suivi de Carrière et Mouvements de Personnel</h1>
+
+<h2>Évolutions de Carrière</h2>
+<a href="{% url 'ajouter_evolution' %}" class="btn btn-primary mb-3">Ajouter une évolution</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Ancien Poste</th>
+            <th>Nouveau Poste</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for evolution in evolutions %}
+        <tr>
+            <td>{{ evolution.employe.nom }} {{ evolution.employe.prenom }}</td>
+            <td>{{ evolution.date_changement }}</td>
+            <td>{{ evolution.get_type_evolution_display }}</td>
+            <td>{{ evolution.ancien_poste.titre }}</td>
+            <td>{{ evolution.nouveau_poste.titre }}</td>
+            <td>
+                <a href="{% url 'detail_employe_carriere' evolution.employe.id %}"
+                    class="btn btn-info btn-sm">Détails</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Mouvements de Personnel</h2>
+<a href="{% url 'ajouter_mouvement' %}" class="btn btn-primary mb-3">Ajouter un mouvement</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Raison</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for mouvement in mouvements %}
+        <tr>
+            <td>{{ mouvement.employe.nom }} {{ mouvement.employe.prenom }}</td>
+            <td>{{ mouvement.date_mouvement }}</td>
+            <td>{{ mouvement.get_type_mouvement_display }}</td>
+            <td>{{ mouvement.raison|truncatewords:10 }}</td>
+            <td>
+                <a href="{% url 'detail_employe_carriere' mouvement.employe.id %}"
+                    class="btn btn-info btn-sm">Détails</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Plans de Recrutement</h1>
+
+<a href="{% url 'ajouter_plan_recrutement' %}" class="btn btn-primary mb-3">Ajouter un plan de recrutement</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+            <th>Nombre de postes</th>
+            <th>Département</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for plan in plans %}
+        <tr>
+            <td>{{ plan.titre }}</td>
+            <td>{{ plan.date_debut }}</td>
+            <td>{{ plan.date_fin }}</td>
+            <td>{{ plan.nombre_postes }}</td>
+            <td>{{ plan.departement }}</td>
+            <td>{{ plan.get_statut_display }}</td>
+            <td>
+                <a href="{% url 'detail_plan_recrutement' plan.id %}" class="btn btn-info btn-sm">Détails</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

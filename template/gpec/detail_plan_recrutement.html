@@ -1,0 +1,60 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>{{ plan.titre }}</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Détails du plan</h5>
+        <p><strong>Description :</strong> {{ plan.description }}</p>
+        <p><strong>Date de début :</strong> {{ plan.date_debut }}</p>
+        <p><strong>Date de fin :</strong> {{ plan.date_fin }}</p>
+        <p><strong>Nombre de postes :</strong> {{ plan.nombre_postes }}</p>
+        <p><strong>Compétences requises :</strong> {{ plan.competences_requises }}</p>
+        <p><strong>Département :</strong> {{ plan.departement }}</p>
+        <p><strong>Statut :</strong> {{ plan.get_statut_display }}</p>
+    </div>
+</div>
+
+<h2>Candidats</h2>
+
+<a href="{% url 'ajouter_candidat' plan.id %}" class="btn btn-primary mb-3">Ajouter un candidat</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Date de candidature</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for candidat in candidats %}
+        <tr>
+            <td>{{ candidat.nom }}</td>
+            <td>{{ candidat.prenom }}</td>
+            <td>{{ candidat.email }}</td>
+            <td>{{ candidat.date_candidature }}</td>
+            <td>
+                <form method="post" action="{% url 'modifier_statut_candidat' candidat.id %}">
+                    {% csrf_token %}
+                    <select name="statut" onchange="this.form.submit()">
+                        {% for value, label in candidat.STATUT_CHOICES %}
+                        <option value="{{ value }}" {% if candidat.statut==value %}selected{% endif %}>{{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </td>
+            <td>
+                <a href="{{ candidat.cv.url }}" class="btn btn-secondary btn-sm" target="_blank">Voir CV</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

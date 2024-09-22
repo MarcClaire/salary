@@ -1,0 +1,30 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Liste des Évaluations</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Date d'évaluation</th>
+            <th>Moyenne globale</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for evaluation in evaluations %}
+        <tr>
+            <td>{{ evaluation.employe }}</td>
+            <td>{{ evaluation.date_evaluation }}</td>
+            <td>{{ evaluation.moyenne_globale|floatformat:2 }}</td>
+            <td>
+                <a href="#" class="btn btn-info btn-sm">Détails</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'evaluation_add' %}" class="btn btn-primary">Nouvelle évaluation</a>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Formulaire d'Évaluation</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Soumettre l'évaluation</button>
+</form>
+{% endblock %}

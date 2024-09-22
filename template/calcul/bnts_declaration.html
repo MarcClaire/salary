@@ -1,0 +1,47 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block title %}Déclaration CNSS {% endblock %}
+
+{% block page_title %}Déclaration CNSS{% endblock %}
+
+{% block content %}
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>N° Matricule</th>
+                        <th>N° CNSS</th>
+                        <th>Date de naissance</th>
+                        <th>Nom</th>
+                        <th>Prénoms</th>
+                        <th>Type de personnel</th>
+                        <th>Nature du revenu</th>
+                        <th>Structure</th>
+                        <th>Base CNSS</th>
+                        <th>Salaire Brut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for declaration in declarations %}
+                    <tr>
+                        <td>{{ declaration.employe.numero_matricule }}</td>
+                        <td>{{ declaration.employe.numero_cnss }}</td>
+                        <td>{{ declaration.employe.date_naissance }}</td>
+                        <td>{{ declaration.employe.nom }}</td>
+                        <td>{{ declaration.employe.prenoms }}</td>
+                        <td>{{ declaration.get_type_personnel_display }}</td>
+                        <td>{{ declaration.get_nature_revenu_display }}</td>
+                        <td>{{ declaration.structure.denomination }}</td>
+                        <td>{{ declaration.base_cnss|floatformat:2 }}</td>
+                        <td>{{ declaration.salaire_brut|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

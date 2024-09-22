@@ -1,0 +1,68 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Effectifs par Genre et Secteur d'Activité</h1>
+
+<form method="get" class="mb-4">
+    <div class="row">
+        <div class="col-md-4">
+            <label for="genre">Genre :</label>
+            <select name="genre" id="genre" class="form-control">
+                <option value="">Tous</option>
+                <option value="M" {% if genre_selectionne == "M" %}selected{% endif %}>Masculin</option>
+                <option value="F" {% if genre_selectionne == "F" %}selected{% endif %}>Féminin</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="secteur">Secteur d'activité :</label>
+            <select name="secteur" id="secteur" class="form-control">
+                <option value="">Tous</option>
+                {% for secteur in secteurs %}
+                <option value="{{ secteur.id }}" {% if secteur_selectionne == secteur.id|stringformat:"s" %}selected{% endif %}>
+                    {{ secteur.nom }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+        </div>
+    </div>
+</form>
+
+<h2>Résultats</h2>
+<p>Total des effectifs : {{ total_effectifs }}</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Secteur d'activité</th>
+            <th>Genre</th>
+            <th>Nombre d'employés</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for effectif in effectifs_par_secteur %}
+        <tr>
+            <td>{{ effectif.secteur_activite__nom|default:"Non spécifié" }}</td>
+            <td>
+                {% if effectif.genre == 'M' %}
+                Masculin
+                {% elif effectif.genre == 'F' %}
+                Féminin
+                {% else %}
+                Non spécifié
+                {% endif %}
+            </td>
+            <td>{{ effectif.total }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Aucun résultat trouvé.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

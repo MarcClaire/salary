@@ -68,35 +68,69 @@ class Diplome(models.Model):
     def __str__(self):
         return self.diplome
 
+class SecteurActivite(models.Model):
+    nom = models.CharField(max_length=100)
 
-#la classe employé
+    def __str__(self):
+        return self.nom
+
+#///////////
 class Employe(models.Model):
     nom = models.CharField(max_length=255)
     prenoms = models.CharField(max_length=255)
-    lieu_naissance = models.CharField(max_length=255)
+    lieu_naissance = models.CharField(max_length=255, null=True, blank=True)
     date_naissance = models.DateField()
     sexe = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
-    numero_cnib = models.CharField(max_length=10, blank=True, null=True)
-    profession = models.CharField(max_length=255, null=True)
-    situation_matrimoniale = models.ForeignKey(SituationMatrimoniale, on_delete=models.CASCADE, null=True)
+    numero_cnib = models.CharField(max_length=10, null=True, blank=True)
+    profession = models.CharField(max_length=255, null=True, blank=True)
+    situation_matrimoniale = models.ForeignKey(SituationMatrimoniale, on_delete=models.CASCADE, null=True, blank=True)
     nombre_enfant = models.IntegerField(default=0)
     telephone = PhoneNumberField()
-    email = models.EmailField()
-    adresse = models.CharField(max_length=255)
-    dernier_diplome = models.ForeignKey(Diplome, on_delete=models.CASCADE, null=True)
-    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, null=True)
-    specialite = models.ForeignKey(Specialite, on_delete=models.CASCADE, null=True)
-    option = models.CharField(max_length=255, null=True)
-    numero_cnss = models.CharField(max_length=20, blank=True, null=True)
-    numero_matricule = models.CharField(max_length=20, blank=True, null=True)
-    nom_pere = models.CharField(max_length=255, null=True)
-    nom_mere = models.CharField(max_length=255, null=True)
-    personne_prevenir =models.CharField(max_length=255, null=True)
-    telephone_prevenir = PhoneNumberField(null=True)
-    photo_cnib = models.ImageField(upload_to='photos_cnib/', blank=True, null=True)
-    photo_identite = models.ImageField(upload_to='photos_identite/', blank=True, null=True)
-    sous_couvert =models.CharField(max_length=255, null=True)
-    
+    email = models.EmailField(null=True, blank=True)
+    adresse = models.CharField(max_length=255, null=True, blank=True)
+    dernier_diplome = models.ForeignKey(Diplome, on_delete=models.CASCADE, null=True, blank=True)
+    categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, null=True, blank=True)
+    specialite = models.ForeignKey(Specialite, on_delete=models.CASCADE, null=True, blank=True)
+    option = models.CharField(max_length=255, null=True, blank=True)
+    secteur_activite = models.ForeignKey(SecteurActivite, on_delete=models.SET_NULL, null=True)
+    numero_cnss = models.CharField(max_length=20, null=True, blank=True)
+    numero_matricule = models.CharField(max_length=20, null=True, blank=True)
+    nom_pere = models.CharField(max_length=255, null=True, blank=True)
+    nom_mere = models.CharField(max_length=255, null=True, blank=True)
+    personne_prevenir = models.CharField(max_length=255, null=True, blank=True)
+    telephone_prevenir = PhoneNumberField(null=True, blank=True)
+    photo_cnib = models.ImageField(upload_to='photos_cnib/', null=True, blank=True)
+    photo_identite = models.ImageField(upload_to='photos_identite/', null=True, blank=True)
+    sous_couvert = models.CharField(max_length=255, null=True, blank=True)
+#/////////////////////
+#la classe employé
+# class Employe(models.Model):
+#     nom = models.CharField(max_length=255)
+#     prenoms = models.CharField(max_length=255)
+#     lieu_naissance = models.CharField(max_length=255, null=True)
+#     date_naissance = models.DateField()
+#     sexe = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
+#     numero_cnib = models.CharField(max_length=10, blank=True, null=True)
+#     profession = models.CharField(max_length=255, null=True)
+#     situation_matrimoniale = models.ForeignKey(SituationMatrimoniale, on_delete=models.CASCADE, null=True)
+#     nombre_enfant = models.IntegerField(default=0)
+#     telephone = PhoneNumberField()
+#     email = models.EmailField(null=True)
+#     adresse = models.CharField(max_length=255, null=True)
+#     dernier_diplome = models.ForeignKey(Diplome, on_delete=models.CASCADE, null=True)
+#     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, null=True)
+#     specialite = models.ForeignKey(Specialite, on_delete=models.CASCADE, null=True)
+#     option = models.CharField(max_length=255, null=True)
+#     numero_cnss = models.CharField(max_length=20, blank=True, null=True)
+#     numero_matricule = models.CharField(max_length=20, blank=True, null=True)
+#     nom_pere = models.CharField(max_length=255, null=True)
+#     nom_mere = models.CharField(max_length=255, null=True)
+#     personne_prevenir =models.CharField(max_length=255, null=True)
+#     telephone_prevenir = PhoneNumberField(null=True)
+#     photo_cnib = models.ImageField(upload_to='photos_cnib/', blank=True, null=True)
+#     photo_identite = models.ImageField(upload_to='photos_identite/', blank=True, null=True)
+#     sous_couvert =models.CharField(max_length=255, null=True)
+
 
     def __str__(self):
         return f"{self.nom} {self.prenoms} {self.numero_matricule}"
@@ -108,7 +142,7 @@ class Dossiers(models.Model):
 
     def __str__(self):
         return self.libelle
-    
+
 
 
 #le type de contrat existant dans les structure
@@ -147,14 +181,14 @@ class Structure(models.Model):
 
 #la classe contrat
 class Contrat(models.Model):
-    structure = models.ForeignKey(Structure, on_delete=models.CASCADE)
-    employe = models.ForeignKey(Employe, on_delete=models.CASCADE)
+    structure = models.ForeignKey(Structure, on_delete=models.CASCADE, null=True, blank=True)
+    employe = models.ForeignKey(Employe, on_delete=models.CASCADE, null=True, blank=True)
     poste=models.CharField(max_length=255, null=True)
-    description_poste = models.TextField()
-    description_profil = models.TextField()
+    description_poste = models.TextField(null=True, blank=True)
+    description_profil = models.TextField(null=True, blank=True)
     lieu_affectation = models.CharField(max_length=255)
-    diplome_requis = models.ForeignKey(Diplome, on_delete=models.CASCADE)
-    type_contrat = models.ForeignKey(TypeContrat, on_delete=models.CASCADE)
+    diplome_requis = models.ForeignKey(Diplome, on_delete=models.CASCADE, null=True, blank=True)
+    type_contrat = models.ForeignKey(TypeContrat, on_delete=models.CASCADE, null=True, blank=True)
     cadre = models.BooleanField(default=False)
     #element_salaire=models.ForeignKey(Elementsalaire, on_delete=models.CASCADE)
     mode_calcul = models.ForeignKey(ModeCalcule, on_delete=models.CASCADE)
@@ -176,6 +210,31 @@ class Contrat(models.Model):
     augmentation_octobre_2019 = models.FloatField(default=False)
     augementation_special_pourcentage = models.FloatField(default=False)
     sursalaire = models.FloatField(default=False)
+    #Nouvelle fonctionnalité
+    TYPE_PERSONNEL_CHOICES = [
+        ('PER', 'Permanent'),
+        ('JOU', 'Journalier'),
+        ('STA', 'Stagiaire'),
+    ]
+    type_personnel = models.CharField(
+        max_length=3,
+        choices=TYPE_PERSONNEL_CHOICES,
+        default='PER',
+        verbose_name="Type de personnel"
+    )
+
+    NATURE_REVENU_CHOICES = [
+        ('S', 'Salaire'),
+        ('R', 'Rappel'),
+        ('A', 'Autres'),
+    ]
+    nature_revenu = models.CharField(
+        max_length=1,
+        choices=NATURE_REVENU_CHOICES,
+        default='S',
+        verbose_name="Nature du revenu"
+    )
+
     class Media:
         js = ('static/js/contrat.form.js')
 
@@ -188,7 +247,7 @@ class Annee(models.Model):
 class Type_paiement(models.Model):
     code=models.CharField(max_length=10, null=True)
     libelle=models.CharField(max_length=100, null=True)
-    
+
 class Paiement(models.Model):
     salaire_net=models.FloatField(null=True)
     salaire_brut=models.FloatField(null=True)
@@ -231,6 +290,6 @@ class Pointage(models.Model):
     nb_h_35=models.IntegerField(null=True)
     nb_h_50=models.IntegerField(null=True)
     nb_h_60=models.IntegerField(null=True)
-    nb_h_120=models.IntegerField(null=True)   
+    nb_h_120=models.IntegerField(null=True)
     nb_quart=models.IntegerField(null=True)
     nb_jour=models.IntegerField(null=True)

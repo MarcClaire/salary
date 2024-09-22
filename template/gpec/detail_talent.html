@@ -1,0 +1,40 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Détails du Talent : {{ talent.employe.nom }} {{ talent.employe.prenoms }}</h1>
+
+<h2>Informations générales</h2>
+<p><strong>Compétences clés :</strong> {{ talent.competences_cles }}</p>
+<p><strong>Réalisations :</strong> {{ talent.realisations }}</p>
+<p><strong>Potentiel :</strong> {{ talent.get_potentiel_display }}</p>
+<p><strong>Objectifs :</strong> {{ talent.objectifs }}</p>
+<p><strong>Plan de développement :</strong> {{ talent.plan_developpement }}</p>
+<p><strong>Dernière évaluation :</strong> {{ talent.date_evaluation }}</p>
+
+<h2>Historique des performances</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Objectifs atteints</th>
+            <th>Évaluation</th>
+            <th>Commentaires</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for performance in performances %}
+        <tr>
+            <td>{{ performance.date_evaluation }}</td>
+            <td>{{ performance.objectifs_atteints }}</td>
+            <td>{{ performance.get_rating_display }}</td>
+            <td>{{ performance.commentaires }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'modifier_talent' talent.id %}" class="btn btn-warning">Modifier le talent</a>
+<a href="{% url 'ajouter_performance' talent.id %}" class="btn btn-success">Ajouter une performance</a>
+<a href="{% url 'gestion_talents' %}" class="btn btn-secondary">Retour à la liste</a>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Ajouter un document pour {{ employe.nom }} {{ employe.prenoms }}</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+</form>
+
+<a href="{% url 'detail_dossier' employe.id %}" class="btn btn-secondary mt-3">Retour au dossier</a>
+{% endblock %}

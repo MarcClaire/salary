@@ -1,0 +1,35 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Matrice des Compétences</h1>
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Employé</th>
+                {% for competence in competences %}
+                <th>{{ competence.nom }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for employe, competences_employe in matrice.items %}
+            <tr>
+                <td>{{ employe.nom }} {{ employe.prenom }}</td>
+                {% for competence in competences %}
+                <td>
+                    {% if competences_employe|get_item:competence %}
+                    {{ competences_employe|get_item:competence }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

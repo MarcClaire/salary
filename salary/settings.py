@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "importer",
     #"user",
     "phonenumber_field",
+    "gpec",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,35 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Dossier de {{ employe.nom }} {{ employe.prenoms }}</h1>
+
+<a href="{% url 'ajouter_document' employe.id %}" class="btn btn-primary mb-3">Ajouter un document</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type de document</th>
+            <th>Titre</th>
+            <th>Date d'ajout</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for document in documents %}
+        <tr>
+            <td>{{ document.get_type_document_display }}</td>
+            <td>{{ document.titre }}</td>
+            <td>{{ document.date_ajout }}</td>
+            <td>
+                <a href="{{ document.fichier.url }}" class="btn btn-info btn-sm" target="_blank">Voir</a>
+                <a href="{% url 'supprimer_document' document.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'dossier_personnel' %}" class="btn btn-secondary">Retour à la liste</a>
+{% endblock %}

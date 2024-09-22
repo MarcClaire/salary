@@ -1,0 +1,34 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Gestion des Talents et des Performances</h1>
+
+<a href="{% url 'ajouter_talent' %}" class="btn btn-primary mb-3">Ajouter un talent</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Potentiel</th>
+            <th>Dernière évaluation</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for talent in talents %}
+        <tr>
+            <td>{{ talent.employe.nom }} {{ talent.employe.prenoms }}</td>
+            <td>{{ talent.get_potentiel_display }}</td>
+            <td>{{ talent.date_evaluation }}</td>
+            <td>
+                <a href="{% url 'detail_talent' talent.id %}" class="btn btn-info btn-sm">Détails</a>
+                <a href="{% url 'modifier_talent' talent.id %}" class="btn btn-warning btn-sm">Modifier</a>
+                <a href="{% url 'ajouter_performance' talent.id %}" class="btn btn-success btn-sm">Ajouter
+                    performance</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

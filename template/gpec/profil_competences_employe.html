@@ -1,0 +1,29 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Profil de Compétences - {{ employe.nom }} {{ employe.prenom }}</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Catégorie</th>
+            <th>Compétence</th>
+            <th>Niveau</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for niveau_competence in niveaux_competences %}
+        <tr>
+            <td>{{ niveau_competence.competence.categorie }}</td>
+            <td>{{ niveau_competence.competence.nom }}</td>
+            <td>{{ niveau_competence.get_niveau_display }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Aucune compétence évaluée pour cet employé.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

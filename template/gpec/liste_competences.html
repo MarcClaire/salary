@@ -1,0 +1,37 @@
+{% extends 'layout/Layout.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Référentiel de Compétences</h1>
+
+<a href="{% url 'ajouter_competence' %}" class="btn btn-primary mb-3">Ajouter une compétence</a>
+<a href="{% url 'evaluer_competence' %}" class="btn btn-secondary mb-3">Évaluer une compétence</a>
+<a href="{% url 'matrice_competences' %}" class="btn btn-info mb-3">Voir la matrice des compétences</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Catégorie</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for competence in competences %}
+        <tr>
+            <td>{{ competence.categorie }}</td>
+            <td>{{ competence.nom }}</td>
+            <td>{{ competence.description|truncatewords:20 }}</td>
+            <td>
+                <a href="{% url 'modifier_competence' competence.id %}" class="btn btn-warning btn-sm">Modifier</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Aucune compétence trouvée.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

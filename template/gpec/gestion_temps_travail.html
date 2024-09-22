@@ -1,0 +1,65 @@
+{% extends 'layout/Layout.html'%}
+<!-- Page Heading -->
+{% load static %}
+
+{% block content %}
+<h1>Gestion du Temps de Travail</h1>
+
+<h2>Pointages du jour</h2>
+<a href="{% url 'ajouter_pointage' %}" class="btn btn-primary mb-3">Ajouter un pointage</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Heure d'arrivée</th>
+            <th>Heure de départ</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pointage in pointages %}
+        <tr>
+            <td>{{ pointage.employe.nom }} {{ pointage.employe.prenom }}</td>
+            <td>{{ pointage.heure_arrivee|default_if_none:"-" }}</td>
+            <td>{{ pointage.heure_depart|default_if_none:"-" }}</td>
+            <td>
+                <a href="{% url 'modifier_pointage' pointage.id %}" class="btn btn-warning btn-sm">Modifier</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Aucun pointage pour aujourd'hui.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Absences en cours</h2>
+<a href="{% url 'ajouter_absence' %}" class="btn btn-primary mb-3">Ajouter une absence</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Type d'absence</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for absence in absences %}
+        <tr>
+            <td>{{ absence.employe.nom }} {{ absence.employe.prenom }}</td>
+            <td>{{ absence.get_type_absence_display }}</td>
+            <td>{{ absence.date_debut }}</td>
+            <td>{{ absence.date_fin }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">Aucune absence en cours.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'rapport_temps_travail' %}" class="btn btn-info">Voir le rapport de temps de travail</a>
+{% endblock %}

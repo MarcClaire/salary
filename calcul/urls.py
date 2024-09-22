@@ -12,4 +12,5 @@ urlpatterns = [
     path("delete/<int:id_paiement>", views.delete_paiement, name='delete_paiement'),
     path("payer/<int:id_paiement>", views.payer, name='payer_paiement'),
     path("details/<int:id_paiement>", views.detail_paiement, name='detail_paiement'),
+    path('livre-de-paie/', views.livre_de_paie, name='livre_de_paie'),
 ]

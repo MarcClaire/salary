@@ -19,6 +19,9 @@
         <p class="font-weight-bold">Date de fin du contrat: {{ detailcontrats.date_fin }}</p>
         <p class="font-weight-bold">Type d'employé: {{ detailcontrats.mode_calcul }}</p>
         <p class="font-weight-bold">Un cadre: {{ detailcontrats.cadre }}</p>
+        <p class="font-weight-bold">Type de personnel : {{ detailcontrats.get_type_personnel_display }}</p>
+        <p class="font-weight-bold">Nature du revenu : {{ detailcontrats.get_nature_revenu_display }}</p>
+
         <div class="mt-4">
             <h1 class="mb-4">Les éléments qui composent le salaire</h1>
             <p class="font-weight-bold">Salaire de base: {{ detailcontrats.salaire_base }}</p>

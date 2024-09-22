@@ -33,5 +33,8 @@ urlpatterns = [
     path('upload-contrat-doc/', views.upload_contrat_doc, name='upload_contrat_doc'),
     path('contrat-pdf/<int:id>/', views.generate_contract_pdf, name='contrat_pdf'),
     path('show-employe/<int:employe_id>/', views.get_employes, name='show_employe'),
+    path('bnts-declaration/', views.bnts_declaration, name='bnts_declaration'),
+    path('tpa-declaration/', views.tpa_declaration, name='tpa_declaration'),
+    path('iuts-declaration/', views.iuts_declaration, name='iuts_declaration'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

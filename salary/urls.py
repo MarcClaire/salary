@@ -31,6 +31,7 @@ urlpatterns = [
     path("scann/", include('scann.urls')),
     path("import/", include('importer.urls')),
     path("user/", include('user.urls')),
+    path("/", include('gpec.urls')),
     path("admin/", admin.site.urls),
 ]
 
