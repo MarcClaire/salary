@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('gpec/', views.gpec_dashboard, name='gpec_dashboard'),
+    path('gpec/dash/', views.gpec_dashboard, name='gpec_dashboard'),
 
     path('gpec/evaluation/', views.evaluation, name='evaluation'),
     path('gpec/ajout-evaluation/', views.evaluation_add, name='evaluation_add'),

@@ -1,0 +1,153 @@
+{% extends 'layout/Layout.html' %}
+
+{% block content %}
+  <h1>Aperçu des Départs à la Retraite</h1>
+
+  <h2>Dans l'année à venir</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Date de retraite</th>
+        <th>Jours restants</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for contrat in departs_1an %}
+        <tr>
+          <td>{{ contrat.employe.nom }}</td>
+          <td>{{ contrat.employe.prenoms }}</td>
+          <td>{{ contrat.date_retraite_prevue }}</td>
+          <td>{{ contrat.annees_avant_retraite }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">Aucun départ prévu dans l'année à venir.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Dans les 3 prochaines années</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Date de retraite</th>
+        <th>Jours restants</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for contrat in departs_3an %}
+        <tr>
+          <td>{{ contrat.employe.nom }}</td>
+          <td>{{ contrat.employe.prenoms }}</td>
+          <td>{{ contrat.date_retraite_prevue }}</td>
+          <td>{{ contrat.annees_avant_retraite }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">Aucun départ prévu dans l'année à venir.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Dans les 5 prochaines années</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Date de retraite</th>
+        <th>Jours restants</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for contrat in departs_5an %}
+        <tr>
+          <td>{{ contrat.employe.nom }}</td>
+          <td>{{ contrat.employe.prenoms }}</td>
+          <td>{{ contrat.date_retraite_prevue }}</td>
+          <td>{{ contrat.annees_avant_retraite }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">Aucun départ prévu dans l'année à venir.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Dans les 10 prochaines années</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Date de retraite</th>
+        <th>Jours restants</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for contrat in departs %}
+        <tr>
+          <td>{{ contrat.employe.nom }}</td>
+          <td>{{ contrat.employe.prenoms }}</td>
+          <td>{{ contrat.date_retraite_prevue }}</td>
+          <td>{{ contrat.annees_avant_retraite }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">Aucun départ prévu dans l'année à venir.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div style="width: 80%; margin: auto;">
+    <canvas id="departsRetraiteChart"></canvas>
+  </div>
+  <script>
+    var ctx = document.getElementById('departsRetraiteChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ labels| safe }},
+    datasets: [{
+        label: 'Nombre de départs à la retraite',
+        data: {{ data| safe }},
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+            }]
+        },
+    options: {
+        responsive: true,
+            scales: {
+            y: {
+                beginAtZero: true,
+                    title: {
+                    display: true,
+                        text: 'Nombre d\'employés'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                        text: 'Année'
+                }
+            }
+        },
+        plugins: {
+            title: {
+                display: true,
+                    text: 'Départs à la retraite prévus sur les 10 prochaines années'
+            }
+        }
+    }
+    });
+</script>
+{% endblock %}

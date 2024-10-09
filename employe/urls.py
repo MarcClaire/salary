@@ -32,6 +32,7 @@ urlpatterns = [
     path('delete-dossiers/<int:id>/', views.deletedossier, name='deletedossier'),
     path('upload-contrat-doc/', views.upload_contrat_doc, name='upload_contrat_doc'),
     path('contrat-pdf/<int:id>/', views.generate_contract_pdf, name='contrat_pdf'),
+    path('contrat/departs-retraite/', views.apercu_departs_retraite, name='apercu_departs_retraite'),
     path('show-employe/<int:employe_id>/', views.get_employes, name='show_employe'),
     path('bnts-declaration/', views.bnts_declaration, name='bnts_declaration'),
     path('tpa-declaration/', views.tpa_declaration, name='tpa_declaration'),

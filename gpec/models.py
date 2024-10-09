@@ -6,7 +6,7 @@ class Evaluation(models.Model):
     employe = models.ForeignKey(Employe, on_delete=models.CASCADE)
     evaluateur = models.ForeignKey(Employe, on_delete=models.CASCADE, related_name='evaluations_effectuees')
     date_evaluation = models.DateField()
-    
+
     # Critères d'évaluation
     performance_poste = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     qualites_relationnelles = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
@@ -19,8 +19,8 @@ class Evaluation(models.Model):
     besoins_formation = models.TextField(blank=True)
 
     def moyenne_globale(self):
-        return (self.performance_poste + self.qualites_relationnelles + 
-                self.engagement_motivation + self.autonomie + 
+        return (self.performance_poste + self.qualites_relationnelles +
+                self.engagement_motivation + self.autonomie +
                 self.conformite_organisationnelle) / 5
 
 class Talent(models.Model):
@@ -32,11 +32,11 @@ class Talent(models.Model):
     ]
 
     employe = models.OneToOneField(Employe, on_delete=models.CASCADE)
-    competences_cles = models.TextField(default='compétences non définis')
-    realisations = models.TextField(default='réalisations non définis')
+    competences_cles = models.TextField(default='Ajoutez des compétences')
+    realisations = models.TextField(default='Ajoutez des réalisations')
     potentiel = models.CharField(max_length=20, choices=POTENTIEL_CHOICES)
-    objectifs = models.TextField(default='Objectifs non définis')
-    plan_developpement = models.TextField(default='plan de developpement non définis')
+    objectifs = models.TextField(default='Ajoutez des objectifs')
+    plan_developpement = models.TextField(default='Ajoutez un plan de developpement')
     date_evaluation = models.DateField()
 
     def __str__(self):
@@ -53,9 +53,9 @@ class Performance(models.Model):
 
     talent = models.ForeignKey(Talent, on_delete=models.CASCADE, related_name='performances')
     date_evaluation = models.DateField()
-    objectifs_atteints = models.TextField(default='Objectifs non définis')
+    objectifs_atteints = models.TextField(default='Ajoutez des objectifs')
     rating = models.IntegerField(choices=RATING_CHOICES)
-    commentaires = models.TextField(default='commentaires non définis')
+    commentaires = models.TextField(default='Ajoutez des commentaires')
 
     def __str__(self):
         return f"Performance de {self.talent.employe.nom} {self.talent.employe.prenoms} - {self.date_evaluation}"
@@ -86,7 +86,7 @@ class DocumentPersonnel(models.Model):
     def __str__(self):
         return f"{self.get_type_document_display()} - {self.employe.nom} {self.employe.prenoms}"
 
-# Suivi 
+# Suivi
 class Poste(models.Model):
     titre = models.CharField(max_length=100)
     description = models.TextField()
@@ -143,16 +143,16 @@ class PlanRecrutement(models.Model):
         ('TERMINE', 'Terminé'),
         ('ANNULE', 'Annulé'),
     ]
-    
+
     titre = models.CharField(max_length=200)
     description = models.TextField(default='descriptions non définis')
     date_debut = models.DateField(default=timezone.now)
     date_fin = models.DateField(default=timezone.now)
     nombre_postes = models.IntegerField(default=0)
-    competences_requises = models.TextField(default='compétences requises non définis')
+    competences_requises = models.TextField(default='Ajoutez des compétences requises')
     departement = models.CharField(max_length=100)
     statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='EN_COURS')
-    
+
     def __str__(self):
         return self.titre
 
@@ -163,7 +163,7 @@ class CandidatPlan(models.Model):
         ('ACCEPTE', 'Accepté'),
         ('REFUSE', 'Refusé'),
     ]
-    
+
     plan = models.ForeignKey(PlanRecrutement, on_delete=models.CASCADE, related_name='candidats')
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
@@ -173,7 +173,7 @@ class CandidatPlan(models.Model):
     date_candidature = models.DateField(default=timezone.now)
     statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='RECU')
     commentaires = models.TextField(blank=True)
-    
+
     def __str__(self):
         return f"{self.nom} {self.prenom} - {self.plan.titre}"
 
@@ -189,7 +189,7 @@ class Pointage(models.Model):
     date = models.DateField(default=timezone.now)
     heure_arrivee = models.TimeField(null=True, blank=True)
     heure_depart = models.TimeField(null=True, blank=True)
-    
+
     def __str__(self):
         return f"{self.employe.nom} - {self.date}"
 
@@ -203,8 +203,8 @@ class Absence(models.Model):
     date_debut = models.DateField(null=True, blank=True)
     date_fin = models.DateField(null=True, blank=True)
     type_absence = models.CharField(max_length=20, choices=TYPE_ABSENCE)
-    justification = models.TextField(blank=True, default="Justification non notifié")
-    
+    justification = models.TextField(blank=True, default="Notifiez une justification")
+
     def __str__(self):
         return f"{self.employe.nom} - {self.get_type_absence_display()} - {self.date_debut}"
 
@@ -217,14 +217,14 @@ class FichePoste(models.Model):
     titre = models.CharField(max_length=200, null=True)
     departement = models.CharField(max_length=100, null=True)
     superieur_hierarchique = models.CharField(max_length=200, null=True)
-    missions_principales = models.TextField(default='Mission non spécifié')
-    activites_principales = models.TextField(default='Activités principales non spécifié')
-    competences_requises = models.TextField(default='compétences requises non spécifié')
-    formation_requise = models.TextField(default='Formation non spécifié')
-    experience_requise = models.TextField(default='Pas d\'expérience reqise')
+    missions_principales = models.TextField(default='spécifiiez une mission')
+    activites_principales = models.TextField(default="Spécifiez l'activitée principale")
+    competences_requises = models.TextField(default='Spécifiez des compétences requises')
+    formation_requise = models.TextField(default='Spécifiez des formations')
+    experience_requise = models.TextField(default='Spécifiez vos expériences')
     date_creation = models.DateField(auto_now_add=True, null=True)
     date_mise_a_jour = models.DateField(auto_now=True, null=True)
-    
+
     def __str__(self):
         return self.titre
 
@@ -232,7 +232,7 @@ class EmployePoste(models.Model):
     employe = models.ForeignKey(Employe, on_delete=models.CASCADE)
     fiche_poste = models.ForeignKey(FichePoste, on_delete=models.CASCADE)
     date_attribution = models.DateField(auto_now_add=True, null=True)
-    
+
     def __str__(self):
         return f"{self.employe.nom} - {self.fiche_poste.titre}"
 
@@ -243,7 +243,7 @@ class EmployePoste(models.Model):
 #     niveau = models.IntegerField()
 class Competence(models.Model):
     nom = models.CharField(max_length=200, null=True)
-    description = models.TextField(default='Pas de compétence d\'abord')
+    description = models.TextField(default='Décrire vos compétences')
     categorie = models.CharField(max_length=100, null=True)
 
     def __str__(self):

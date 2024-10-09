@@ -32,6 +32,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Count
+from django.db.models.functions import TruncYear
+
+
+from django import forms
 
 
 
@@ -75,8 +80,6 @@ def ajouter_employe(request):
     if request.method == 'POST':
         form = EmployeForm(request.POST, request.FILES)
         if form.is_valid():
-        #     form.save()
-        # return HttpResponseRedirect(reverse('personel'))
             try:
                 form.save()
                 # nom_employe = employe.nom
@@ -97,6 +100,8 @@ def update_empl_data(request, id):
         if form.is_valid():
             try:
                 form.save()
+                
+
                 return HttpResponseRedirect(reverse('personel'))
             except forms.ValidationError as e:
                 # Si une ValidationError est levée, renvoyer le formulaire avec l'erreur
@@ -128,7 +133,9 @@ def ajouter_contrat(request):
     if request.method == 'POST':
         form = ContratForm(request.POST)
         if form.is_valid():
-            form.save()
+            contrat=form.save(commit=False)
+            contrat.calculer_date_retraite()
+            contrat.save()
         return HttpResponseRedirect(reverse('contrat'))
         #return redirect(' contrat')  
     else:
@@ -150,7 +157,10 @@ def update_contrat_data(request, contrat_id):
         #contrat= Contrat.objects.get(pk=contrat_id)
         form = ContratForm(request.POST, instance=contrat)
         if form.is_valid():
-            form.save()
+            #form.save()
+            contrats = form.save(commit=False)
+            contrats.calculer_date_retraite()
+            contrats.save()
         return HttpResponseRedirect(reverse('contrat'))
         #return redirect('contrat')
     else:
@@ -244,7 +254,7 @@ def ajouter_dossiers(request, id):
             dossier.save()
         return redirect('dossier_employe', id=employe.id)
     else:
-        return render(request, 'dossiers/liste_dossiers_employe.html', {'employe_id': employe_id})
+        return render(request, 'dossiers/liste_dossiers_employe.html', {'employe_id': employe.id})
 
 #cette fonction permet de mettre à jour les dossiers
 @login_required(login_url="user_signin")
@@ -297,11 +307,46 @@ def get_employes(request, employe_id):
     employe = get_object_or_404(Employe, id=employe_id)
     return render(request, 'employe/show_employe.html', {'employe': employe})
 
+#la création de la fonctionnalité de gestion des départs à la retraite.
+def apercu_departs_retraite(request):
+    aujourd_hui = timezone.now().date()
+    un_an = aujourd_hui + timedelta(days=365)
+    trois_ans = aujourd_hui + timedelta(days=3*365)
+    cinq_ans = aujourd_hui + timedelta(days=5*365)
+    dix_ans = aujourd_hui + timedelta(days=10*365)
+
+    departs_1an = Contrat.objects.filter(date_retraite_prevue__lte=un_an).order_by('date_retraite_prevue')
+    departs_3ans = Contrat.objects.filter(date_retraite_prevue__lte=trois_ans).order_by('date_retraite_prevue')
+    departs_5ans = Contrat.objects.filter(date_retraite_prevue__lte=cinq_ans).order_by('date_retraite_prevue')
+    departs = Contrat.objects.filter(date_retraite_prevue__range=[aujourd_hui, dix_ans]).annotate(
+        annee=TruncYear('date_retraite_prevue')).values('annee').annotate(
+        count=Count('id')).order_by('annee')
+    departs_par_departement = Contrat.objects.filter(date_retraite_prevue__range=[aujourd_hui, dix_ans]).values('structure').annotate(
+        count=Count('id')).order_by('-count')
+
+    departements = [depart['structure'] for depart in departs_par_departement]
+    data_par_departement = [depart['count'] for depart in departs_par_departement]
+
+
+
+    labels = [depart['annee'].year for depart in departs]
+    data = [depart['count'] for depart in departs]
+
+    context = {
+        'labels': labels,
+        'data': data,
+        'departs_1an': departs_1an,
+        'departs_3ans': departs_3ans,
+        'departs_5ans': departs_5ans,
+        'departs_1àans':departs,
+        'departements': departements,
+        'data_par_departement': data_par_departement,
+    }
+    return render(request, 'contrat/apercu_departs_retraite.html', context)
+
+
 # Cette fonction permet de générer le contrat de travail
 @login_required(login_url="user_signin")
-
-
-
 def generate_contract_pdf(request, id):
     contrat = get_object_or_404(Contrat, id=id)
     par = Parametre_calcul.objects.get(id=1)

@@ -1,6 +1,8 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-from elementSal.models import Elementsalaire
+#from datetime import timedelta
+from django.utils import timezone
+#from elementSal.models import Elementsalaire
 # Create your models here.
 
 #les differents types de situation matrimonialeque peux avoir un employé
@@ -102,35 +104,6 @@ class Employe(models.Model):
     photo_cnib = models.ImageField(upload_to='photos_cnib/', null=True, blank=True)
     photo_identite = models.ImageField(upload_to='photos_identite/', null=True, blank=True)
     sous_couvert = models.CharField(max_length=255, null=True, blank=True)
-#/////////////////////
-#la classe employé
-# class Employe(models.Model):
-#     nom = models.CharField(max_length=255)
-#     prenoms = models.CharField(max_length=255)
-#     lieu_naissance = models.CharField(max_length=255, null=True)
-#     date_naissance = models.DateField()
-#     sexe = models.CharField(max_length=10, choices=[('M', 'Masculin'), ('F', 'Féminin')])
-#     numero_cnib = models.CharField(max_length=10, blank=True, null=True)
-#     profession = models.CharField(max_length=255, null=True)
-#     situation_matrimoniale = models.ForeignKey(SituationMatrimoniale, on_delete=models.CASCADE, null=True)
-#     nombre_enfant = models.IntegerField(default=0)
-#     telephone = PhoneNumberField()
-#     email = models.EmailField(null=True)
-#     adresse = models.CharField(max_length=255, null=True)
-#     dernier_diplome = models.ForeignKey(Diplome, on_delete=models.CASCADE, null=True)
-#     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, null=True)
-#     specialite = models.ForeignKey(Specialite, on_delete=models.CASCADE, null=True)
-#     option = models.CharField(max_length=255, null=True)
-#     numero_cnss = models.CharField(max_length=20, blank=True, null=True)
-#     numero_matricule = models.CharField(max_length=20, blank=True, null=True)
-#     nom_pere = models.CharField(max_length=255, null=True)
-#     nom_mere = models.CharField(max_length=255, null=True)
-#     personne_prevenir =models.CharField(max_length=255, null=True)
-#     telephone_prevenir = PhoneNumberField(null=True)
-#     photo_cnib = models.ImageField(upload_to='photos_cnib/', blank=True, null=True)
-#     photo_identite = models.ImageField(upload_to='photos_identite/', blank=True, null=True)
-#     sous_couvert =models.CharField(max_length=255, null=True)
-
 
     def __str__(self):
         return f"{self.nom} {self.prenoms} {self.numero_matricule}"
@@ -178,22 +151,28 @@ class Structure(models.Model):
         return self.denomination
 
 
+from datetime import timedelta
+from django.utils import timezone
 
-#la classe contrat
 class Contrat(models.Model):
     structure = models.ForeignKey(Structure, on_delete=models.CASCADE, null=True, blank=True)
     employe = models.ForeignKey(Employe, on_delete=models.CASCADE, null=True, blank=True)
-    poste=models.CharField(max_length=255, null=True)
+    poste = models.CharField(max_length=255, null=True)
     description_poste = models.TextField(null=True, blank=True)
     description_profil = models.TextField(null=True, blank=True)
     lieu_affectation = models.CharField(max_length=255)
     diplome_requis = models.ForeignKey(Diplome, on_delete=models.CASCADE, null=True, blank=True)
     type_contrat = models.ForeignKey(TypeContrat, on_delete=models.CASCADE, null=True, blank=True)
     cadre = models.BooleanField(default=False)
-    #element_salaire=models.ForeignKey(Elementsalaire, on_delete=models.CASCADE)
     mode_calcul = models.ForeignKey(ModeCalcule, on_delete=models.CASCADE)
-    date_debut = models.DateField(default=0)
-    date_fin = models.DateField(default=0)
+    date_debut = models.DateField(null=True, blank=True)
+    date_fin = models.DateField(null=True, blank=True)
+
+    # Nouveaux champs pour la gestion de la retraite
+    age_legal_retraite = models.IntegerField(default=62)
+    date_retraite_prevue = models.DateField(null=True, blank=True)
+
+    # Informations salariales
     salaire_base = models.FloatField(default=0)
     indemnite_logement = models.FloatField(default=0, null=True)
     indemnite_transport = models.FloatField(default=0, null=True)
@@ -210,7 +189,8 @@ class Contrat(models.Model):
     augmentation_octobre_2019 = models.FloatField(default=False)
     augementation_special_pourcentage = models.FloatField(default=False)
     sursalaire = models.FloatField(default=False)
-    #Nouvelle fonctionnalité
+
+    # Types de personnel et nature de revenu
     TYPE_PERSONNEL_CHOICES = [
         ('PER', 'Permanent'),
         ('JOU', 'Journalier'),
@@ -234,6 +214,115 @@ class Contrat(models.Model):
         default='S',
         verbose_name="Nature du revenu"
     )
+
+    def save(self, *args, **kwargs):
+        """
+        Méthode save() pour calculer automatiquement la date de retraite prévue
+        si elle n'est pas encore définie.
+        """
+        if not self.date_retraite_prevue and self.employe and self.employe.date_naissance:
+            self.date_retraite_prevue = self.employe.date_naissance.replace(
+                year=self.employe.date_naissance.year + self.age_legal_retraite
+            )
+        super(Contrat, self).save(*args, **kwargs)
+
+    def calculer_date_retraite(self):
+        """
+        Méthode qui calcule et retourne la date de retraite prévue si elle
+        n'est pas encore calculée.
+        """
+        if not self.date_retraite_prevue and self.employe and self.employe.date_naissance:
+            self.date_retraite_prevue = self.employe.date_naissance.replace(
+                year=self.employe.date_naissance.year + self.age_legal_retraite
+            )
+            self.save()
+        return self.date_retraite_prevue
+
+    def annees_avant_retraite(self):
+        """
+        Méthode pour calculer le nombre d'années restantes avant la retraite
+        en fonction de la date de retraite prévue.
+        """
+        if self.date_retraite_prevue:
+            aujourd_hui = timezone.now().date()
+            return (self.date_retraite_prevue - aujourd_hui).days // 365
+        return None
+
+#la classe contrat
+# class Contrat(models.Model):
+#     structure = models.ForeignKey(Structure, on_delete=models.CASCADE, null=True, blank=True)
+#     employe = models.ForeignKey(Employe, on_delete=models.CASCADE, null=True, blank=True)
+#     poste=models.CharField(max_length=255, null=True)
+#     description_poste = models.TextField(null=True, blank=True)
+#     description_profil = models.TextField(null=True, blank=True)
+#     lieu_affectation = models.CharField(max_length=255)
+#     diplome_requis = models.ForeignKey(Diplome, on_delete=models.CASCADE, null=True, blank=True)
+#     type_contrat = models.ForeignKey(TypeContrat, on_delete=models.CASCADE, null=True, blank=True)
+#     cadre = models.BooleanField(default=False)
+#     #element_salaire=models.ForeignKey(Elementsalaire, on_delete=models.CASCADE)
+#     mode_calcul = models.ForeignKey(ModeCalcule, on_delete=models.CASCADE)
+#     date_debut = models.DateField(null=True, blank=True)
+#     date_fin = models.DateField(null=True, blank=True) 
+#     #duree = models.IntegerField(null=True, blank=True, help_text="Durée en mois pour CDD")
+
+#     # Nouveaux champs pour la gestion de la retraite
+#     age_legal_retraite = models.IntegerField(default=62)
+#     date_retraite_prevue = models.DateField(null=True, blank=True)
+
+
+#     salaire_base = models.FloatField(default=0)
+#     indemnite_logement = models.FloatField(default=0, null=True)
+#     indemnite_transport = models.FloatField(default=0, null=True)
+#     indemnite_fonction = models.FloatField(default=0, null=True)
+#     indemnite_risque = models.FloatField(default=0, null=True)
+#     prime_nourriture = models.FloatField(default=0, null=True)
+#     prime_lait = models.FloatField(default=0, null=True)
+#     prime_salissure = models.FloatField(default=0, null=True)
+#     prime_astreinte = models.FloatField(default=0, null=True)
+#     nombre_annee_travail = models.IntegerField(default=0, null=True)
+#     prime_anciennete = models.BooleanField(default=False, null=True)
+#     prime_quart = models.BooleanField(default=False)
+#     prime_panier = models.BooleanField(default=False)
+#     augmentation_octobre_2019 = models.FloatField(default=False)
+#     augementation_special_pourcentage = models.FloatField(default=False)
+#     sursalaire = models.FloatField(default=False)
+#     #Nouvelle fonctionnalité
+#     TYPE_PERSONNEL_CHOICES = [
+#         ('PER', 'Permanent'),
+#         ('JOU', 'Journalier'),
+#         ('STA', 'Stagiaire'),
+#     ]
+#     type_personnel = models.CharField(
+#         max_length=3,
+#         choices=TYPE_PERSONNEL_CHOICES,
+#         default='PER',
+#         verbose_name="Type de personnel"
+#     )
+
+#     NATURE_REVENU_CHOICES = [
+#         ('S', 'Salaire'),
+#         ('R', 'Rappel'),
+#         ('A', 'Autres'),
+#     ]
+#     nature_revenu = models.CharField(
+#         max_length=1,
+#         choices=NATURE_REVENU_CHOICES,
+#         default='S',
+#         verbose_name="Nature du revenu"
+#     )
+
+#     def calculer_date_retraite(self):
+#         if not self.date_retraite_prevue:
+#             self.date_retraite_prevue = self.employe.date_naissance.replace(year=Employe.date_naissance.year + self.age_legal_retraite)
+#             self.save()
+#         return self.date_retraite_prevue
+    
+#     def annees_avant_retraite(self):
+#         if self.date_retraite_prevue:
+#             aujourd_hui = timezone.now().date()
+#             return (self.date_retraite_prevue - aujourd_hui).days // 365
+#         return None
+
 
     class Media:
         js = ('static/js/contrat.form.js')

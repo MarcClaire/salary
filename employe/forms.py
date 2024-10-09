@@ -259,6 +259,55 @@ class DossiersFrom(forms.ModelForm):
         self.fields['file'].widget.attrs['id'] = 'id_file'
 
 #formulaire des contrat
+
+# class ContratForm(forms.ModelForm):
+#     class Meta:
+#         model = Contrat
+#         fields = '__all__'
+#         widgets = {
+#             'type_contrat': forms.Select(attrs={'class':'contrat-type', 'onchange': 'updateDateFields();'}),
+#             'type_personnel': forms.Select(attrs={'class': 'form-control'}),
+#             'nature_revenu': forms.Select(attrs={'class': 'form-control'}),
+#             'date_debut': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+#             'date_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+#             'duree': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),  # Durée en mois
+#         }
+
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         type_contrat = cleaned_data.get("type_contrat")
+#         duree = cleaned_data.get("duree")
+#         date_debut = cleaned_data.get("date_debut")
+
+#         if type_contrat.nom == 'CDD':
+#             # La durée doit être présente pour les CDD
+#             if not duree:
+#                 self.add_error('duree', 'La durée est obligatoire pour un CDD.')
+#         elif type_contrat.nom == 'CDI':
+#             # Pas de durée ni de date de fin pour CDI
+#             cleaned_data['duree'] = None
+#             cleaned_data['date_fin'] = None
+
+#         return cleaned_data
+
+
+#     # Initialisation des champs du formulaire
+#     def __init__(self, *args, **kwargs):
+#         super(ContratForm, self).__init__(*args, **kwargs)
+#         self.fields['structure'].widget.attrs['class'] = 'form-control'
+#         self.fields['employe'].widget.attrs['class'] = 'form-control'
+#         self.fields['salaire_base'].widget.attrs['class'] = 'form-control'
+
+#         # Ajout d'ID pour manipuler via JS
+#         self.fields['duree'].widget.attrs['id'] = 'id_duree'
+#         self.fields['date_fin'].widget.attrs['id'] = 'id_date_fin'
+
+#         # Affiche la durée seulement si CDD
+#         if self.instance and self.instance.type_contrat.nom == 'CDD':
+#             self.fields['duree'].required = True
+#         else:
+#             self.fields['duree'].widget.attrs['style'] = 'display:none;'
+
 class ContratForm(forms.ModelForm):
     class Meta:
         model = Contrat
@@ -335,6 +384,13 @@ class ContratForm(forms.ModelForm):
         input_formats=['%Y-%m-%d'],
         required=True,
         )
+    age_legal_retraite= forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-control'}),
+        required=True
+    )
+    date_retraite_prevue=forms.DateField(widget=DateInput(attrs={'class':'form-control'}),
+                                         input_formats=['%Y-%m-%d'],
+                                         required=True)
     salaire_base = forms.FloatField(
         widget=forms.NumberInput(attrs={'class': 'form-control'}),
         required=True,  # Facultatif selon vos besoins
